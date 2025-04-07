@@ -2,14 +2,18 @@
 <html>
 <head>
     <script>
-        const code = new URLSearchParams(window.location.search).get('code');
-        // Try to open app
+        // Try to open app first
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
         window.location.href = `intent://invite?code=${code}#Intent;scheme=com.example.kidsnutrition;package=com.example.kidsnutrition;end`;
+        
         // Fallback to Play Store
         setTimeout(() => {
             window.location.href = "https://play.google.com/store/apps/details?id=com.example.kidsnutrition";
         }, 1000);
     </script>
 </head>
-<body>Redirecting...</body>
+<body>
+    Redirecting to app...
+</body>
 </html>
