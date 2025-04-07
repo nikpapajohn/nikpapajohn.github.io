@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html>
-<body>
-<p>GitHub Pages placeholder</p>
-</body>
+<head>
+    <script>
+        const code = new URLSearchParams(window.location.search).get('code');
+        // Try to open app
+        window.location.href = `intent://invite?code=${code}#Intent;scheme=com.example.kidsnutrition;package=com.example.kidsnutrition;end`;
+        // Fallback to Play Store
+        setTimeout(() => {
+            window.location.href = "https://play.google.com/store/apps/details?id=com.example.kidsnutrition";
+        }, 1000);
+    </script>
+</head>
+<body>Redirecting...</body>
 </html>
