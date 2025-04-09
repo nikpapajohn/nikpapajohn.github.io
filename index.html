@@ -2,6 +2,33 @@
 <html>
 <head>
     <script>
+        function launchApp() {
+            // Try to open app directly
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get('code');
+            window.location.href = `intent://invite?code=${code}#Intent;scheme=com.example.kidsnutrition;package=com.example.kidsnutrition;action=android.intent.action.VIEW;category=android.intent.category.BROWSABLE;end`;
+            
+            // Fallback to Play Store after delay
+            setTimeout(function() {
+                window.location.href = "https://play.google.com/store/apps/details?id=com.example.kidsnutrition";
+            }, 1000);
+        }
+        // Launch immediately on page load
+        window.onload = launchApp;
+    </script>
+</head>
+<body>
+    <p>Redirecting to Kids Nutrition app...</p>
+    <a href="https://play.google.com/store/apps/details?id=com.example.kidsnutrition">
+        Or click here to install
+    </a>
+</body>
+</html>
+
+<!-- <!DOCTYPE html>
+<html>
+<head>
+    <script>
         // Try to open app first
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
@@ -17,3 +44,4 @@
     Redirecting to app...
 </body>
 </html>
+ -->
