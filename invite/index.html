@@ -1,1 +1,26 @@
-
+<!DOCTYPE html>
+<html>
+<head>
+    <title>App Invite</title>
+    <script>
+        function redirectToApp() {
+            // Try to open app directly
+            const url = new URL(window.location.href);
+            const code = url.searchParams.get('code');
+            window.location.href = `intent://invite?code=${code}#Intent;scheme=com.example.kidsnutrition;package=com.example.kidsnutrition;end`;
+            
+            // Fallback to Play Store after 1 second
+            setTimeout(() => {
+                window.location.href = "https://play.google.com/store/apps/details?id=com.example.kidsnutrition";
+            }, 1000);
+        }
+        window.onload = redirectToApp;
+    </script>
+</head>
+<body>
+    <p>Redirecting to app...</p>
+    <a href="https://play.google.com/store/apps/details?id=com.example.kidsnutrition">
+        Click here if not redirected
+    </a>
+</body>
+</html>
