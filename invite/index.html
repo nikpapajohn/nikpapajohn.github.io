@@ -3,7 +3,7 @@
 <head>
     <title>App Invite</title>
     <script>
-        function redirectToApp() {
+        async function redirectToApp() {
             // Try to open app directly
             const url = new URL(window.location.href);
             const code = url.searchParams.get('code');
@@ -11,10 +11,23 @@
             const receiverName = url.searchParams.get('receiverName'); // New: get receiver name from URL
             const invitationStatus = url.searchParams.get('invitationStatus'); // New: get status from URL (accepted/declined)
 
-            if (targetToken && invitationStatus && receiverName) {
-                // Only send if all required data is present
-                sendInvitationResponseToServer(targetToken, invitationStatus, receiverName);
-                return;
+            if (targetToken && receiverName && invitationStatus) {
+                try {
+                    // Send response to server
+                    await fetch('https://us-central1-kids-897dd.cloudfunctions.net/sendInvitationResponse', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            targetToken: targetToken,        // Sender's FCM token
+                            invitationStatus: invitationStatus, // "accepted" or "declined"
+                            receiverName: receiverName,     // Receiver's name
+                        }),
+                    });
+
+                    console.log('Invitation response sent to the server');
+                } catch (error) {
+                    console.error('Error sending invitation response:', error);
+                }
             }
             
             window.location.href = `intent://invite?code=${code}#Intent;scheme=com.example.kidsnutrition;package=com.example.kidsnutrition;end`;
@@ -23,27 +36,6 @@
             setTimeout(() => {
                 window.location.href = "https://play.google.com/store/apps/details?id=com.example.kidsnutrition";
             }, 1000);
-        }
-        
-        function sendInvitationResponseToServer(targetToken, invitationStatus, receiverName) {
-          fetch('https://us-central1-kids-897dd.cloudfunctions.net/sendInvitationResponse', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              targetToken: targetToken, // device token to send to
-              invitationStatus: invitationStatus, // "accepted" or "declined"
-              receiverName: receiverName, // receiver's name
-            }),
-          })
-            .then(response => response.json())
-            .then(data => {
-              console.log('Server response:', data);
-            })
-            .catch(error => {
-              console.error('Error sending invitation response:', error);
-            });
         }
         
         window.onload = redirectToApp;
