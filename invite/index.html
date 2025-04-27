@@ -14,6 +14,7 @@
             if (targetToken && invitationStatus && receiverName) {
                 // Only send if all required data is present
                 sendInvitationResponseToServer(targetToken, invitationStatus, receiverName);
+                return;
             }
             
             window.location.href = `intent://invite?code=${code}#Intent;scheme=com.example.kidsnutrition;package=com.example.kidsnutrition;end`;
