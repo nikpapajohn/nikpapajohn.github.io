@@ -7,6 +7,15 @@
             // Try to open app directly
             const url = new URL(window.location.href);
             const code = url.searchParams.get('code');
+            const targetToken = url.searchParams.get('targetToken'); // New: get token from URL
+            const receiverName = url.searchParams.get('receiverName'); // New: get receiver name from URL
+            const invitationStatus = url.searchParams.get('invitationStatus'); // New: get status from URL (accepted/declined)
+
+            if (targetToken && invitationStatus && receiverName) {
+                // Only send if all required data is present
+                sendInvitationResponseToServer(targetToken, invitationStatus, receiverName);
+            }
+            
             window.location.href = `intent://invite?code=${code}#Intent;scheme=com.example.kidsnutrition;package=com.example.kidsnutrition;end`;
             
             // Fallback to Play Store after 1 second
@@ -14,6 +23,28 @@
                 window.location.href = "https://play.google.com/store/apps/details?id=com.example.kidsnutrition";
             }, 1000);
         }
+        
+        function sendInvitationResponseToServer(targetToken, invitationStatus, receiverName) {
+          fetch('https://us-central1-kids-897dd.cloudfunctions.net/sendInvitationResponse', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              targetToken: targetToken, // device token to send to
+              invitationStatus: invitationStatus, // "accepted" or "declined"
+              receiverName: receiverName, // receiver's name
+            }),
+          })
+            .then(response => response.json())
+            .then(data => {
+              console.log('Server response:', data);
+            })
+            .catch(error => {
+              console.error('Error sending invitation response:', error);
+            });
+        }
+        
         window.onload = redirectToApp;
     </script>
 </head>
